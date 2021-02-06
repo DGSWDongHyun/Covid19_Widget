@@ -8,6 +8,7 @@ import android.os.CountDownTimer
 import android.os.StrictMode
 import android.util.Log
 import android.widget.RemoteViews
+import com.widget.covid19_.KeyData
 import com.widget.covid19_.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,6 +22,7 @@ import java.net.URL
 import java.util.*
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -124,7 +126,7 @@ class WidgetProvider : AppWidgetProvider() {
         val doc = db.parse(InputSource(url.openStream()))
         doc.documentElement.normalize()
 
-        val arrayHash = HashMap<String, String>()
+        val arrayData : ArrayList<KeyData> = ArrayList()
 
         GlobalScope.launch {
             withContext(Dispatchers.Default) {
@@ -142,32 +144,41 @@ class WidgetProvider : AppWidgetProvider() {
 
                         appWidgetManager?.updateAppWidget(appWidgetId!!, remoteViews)
                     } else {
-                        arrayHash[gubun.item(0).childNodes.item(0).nodeValue.toString()] = incDec.item(0).childNodes.item(0).nodeValue.toString()
-                        Log.d("TAG", arrayHash.toString())
+                        arrayData.add(KeyData(gubun.item(0).childNodes.item(0).nodeValue.toString()!!, incDec.item(0).childNodes.item(0).nodeValue.toString()))
+                        Log.d("TAG", arrayData.toString())
 
                         appWidgetManager?.updateAppWidget(appWidgetId!!, remoteViews)
                     }
                 }
             }
         }
-        tickClock(remoteViews, appWidgetManager, appWidgetId, arrayHash)
+        remoteViews.setTextViewText(R.id.knownDate, "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_WEEK) - 1}일 오전 11시 기준으로 수집된 데이터입니다.")
+
+        tickClock(remoteViews, appWidgetManager, appWidgetId, arrayData, 1)
+
+
     }
 
-    private fun tickClock(remoteViews: RemoteViews, appWidgetManager: AppWidgetManager?, appWidgetId : Int?, arrayHash : HashMap<String, String>) {
+    private fun tickClock(remoteViews: RemoteViews, appWidgetManager: AppWidgetManager?, appWidgetId : Int?, arrayData : ArrayList<KeyData>, index : Int?) {
         object : CountDownTimer(5000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
             }
             override fun onFinish() {
+                var indexData = index!!
 
-                arrayHash.forEach { (keys, value) ->
-                    remoteViews.setTextViewText(R.id.placeName, keys)
-                    remoteViews.setTextViewText(R.id.getPlaceIncText, value)
-                }
+                remoteViews.setTextViewText(R.id.placeName, arrayData[indexData - 1].key)
+                remoteViews.setTextViewText(R.id.getPlaceIncText, arrayData[indexData - 1].increase)
+
+                indexData ++
 
                 appWidgetManager?.updateAppWidget(appWidgetId!!, remoteViews)
 
+                if(arrayData.size == indexData)
+                    tickClock(remoteViews, appWidgetManager, appWidgetId, arrayData, 1)
+                else
+                    tickClock(remoteViews, appWidgetManager, appWidgetId, arrayData, indexData)
+
                 cancel()
-                tickClock(remoteViews, appWidgetManager, appWidgetId, arrayHash)
             }
         }.start()
 
