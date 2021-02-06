@@ -1,4 +1,4 @@
-package com.widget.covid19_.widget
+package com.widget.covid19_.ui.widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -8,7 +8,7 @@ import android.os.CountDownTimer
 import android.os.StrictMode
 import android.util.Log
 import android.widget.RemoteViews
-import com.widget.covid19_.KeyData
+import com.widget.covid19_.data.key.KeyData
 import com.widget.covid19_.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,7 +23,6 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class WidgetProvider : AppWidgetProvider() {
@@ -49,7 +48,6 @@ class WidgetProvider : AppWidgetProvider() {
 
     //    위젯이 처음 생성될때 호출되며, 동일한 위젯의 경우 처음 호출
     override fun onEnabled(context: Context?) {
-
         super.onEnabled(context)
     }
 
