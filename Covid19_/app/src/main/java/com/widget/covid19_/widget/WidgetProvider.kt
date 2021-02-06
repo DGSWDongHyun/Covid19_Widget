@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.CountDownTimer
 import android.os.StrictMode
 import android.util.Log
 import android.widget.RemoteViews
@@ -20,6 +21,7 @@ import java.net.URL
 import java.util.*
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.collections.HashMap
 
 
 class WidgetProvider : AppWidgetProvider() {
@@ -65,31 +67,53 @@ class WidgetProvider : AppWidgetProvider() {
         return views
     }
 
+    private fun getPlaceInfo() {
+        
+    }
+
     private fun getCovidInfo(remoteViews: RemoteViews, appWidgetManager: AppWidgetManager?, appWidgetId : Int?) {
 
         val policy: StrictMode.ThreadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
         val dateNow : Calendar = Calendar.getInstance()
-
-        var s = ""
         var date = ""
 
-        if(dateNow.get(Calendar.MONTH) < 10){
-            if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
-                date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
-                Log.d("TAG_date", date.toString())
+        if(onCheckTime(dateNow)){
+            if(dateNow.get(Calendar.MONTH) < 10){
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                    date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH)}"
+                    Log.d("TAG_date", date.toString())
+                }else{
+                    date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}${dateNow.get(Calendar.DAY_OF_MONTH)}"
+                    Log.d("TAG_date", date.toString())
+                }
             }else{
-                date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}${dateNow.get(Calendar.DAY_OF_MONTH)}"
-                Log.d("TAG_date", date.toString())
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                    date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH)}"
+                    Log.d("TAG_date", date.toString())
+                }else{
+                    date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}${dateNow.get(Calendar.DAY_OF_MONTH)}"
+                    Log.d("TAG_date", date.toString())
+                }
             }
         }else{
-            if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
-                date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH)}"
-                Log.d("TAG_date", date.toString())
+            if(dateNow.get(Calendar.MONTH) < 10){
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                    date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
+                    Log.d("TAG_date", date.toString())
+                }else{
+                    date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
+                    Log.d("TAG_date", date.toString())
+                }
             }else{
-                date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}${dateNow.get(Calendar.DAY_OF_MONTH)}"
-                Log.d("TAG_date", date.toString())
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                    date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
+                    Log.d("TAG_date", date.toString())
+                }else{
+                    date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
+                    Log.d("TAG_date", date.toString())
+                }
             }
         }
 
@@ -99,6 +123,8 @@ class WidgetProvider : AppWidgetProvider() {
         val db: DocumentBuilder = dbf.newDocumentBuilder()
         val doc = db.parse(InputSource(url.openStream()))
         doc.documentElement.normalize()
+
+        val arrayHash = HashMap<String, String>()
 
         GlobalScope.launch {
             withContext(Dispatchers.Default) {
@@ -112,16 +138,46 @@ class WidgetProvider : AppWidgetProvider() {
                     val incDec: NodeList = fstElmnt.getElementsByTagName("incDec")
 
                     if (gubun.item(0).childNodes.item(0).nodeValue == "합계") {
-                        s += incDec.item(0).childNodes.item(0).nodeValue.toString()
-                        remoteViews.setTextViewText(R.id.getIncText, s)
+                        remoteViews.setTextViewText(R.id.getIncText, incDec.item(0).childNodes.item(0).nodeValue.toString())
+
+                        appWidgetManager?.updateAppWidget(appWidgetId!!, remoteViews)
+                    } else {
+                        arrayHash[gubun.item(0).childNodes.item(0).nodeValue.toString()] = incDec.item(0).childNodes.item(0).nodeValue.toString()
+                        Log.d("TAG", arrayHash.toString())
 
                         appWidgetManager?.updateAppWidget(appWidgetId!!, remoteViews)
                     }
-
-
                 }
             }
         }
+        tickClock(remoteViews, appWidgetManager, appWidgetId, arrayHash)
+    }
+
+    private fun tickClock(remoteViews: RemoteViews, appWidgetManager: AppWidgetManager?, appWidgetId : Int?, arrayHash : HashMap<String, String>) {
+        object : CountDownTimer(5000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+
+                arrayHash.forEach { (keys, value) ->
+                    remoteViews.setTextViewText(R.id.placeName, keys)
+                    remoteViews.setTextViewText(R.id.getPlaceIncText, value)
+                }
+
+                appWidgetManager?.updateAppWidget(appWidgetId!!, remoteViews)
+
+                cancel()
+                tickClock(remoteViews, appWidgetManager, appWidgetId, arrayHash)
+            }
+        }.start()
+
+    }
+
+    private fun onCheckTime(cal : Calendar) : Boolean{
+        if(cal.get(Calendar.HOUR_OF_DAY) >= 11) {
+            return true
+        }
+        return false
     }
 
 }
