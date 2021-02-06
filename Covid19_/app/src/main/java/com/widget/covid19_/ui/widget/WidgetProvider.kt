@@ -81,7 +81,7 @@ class WidgetProvider : AppWidgetProvider() {
 
         if(onCheckTime(dateNow)){
             if(dateNow.get(Calendar.MONTH) < 10){
-                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH)}"
                     Log.d("TAG_date", date.toString())
                 }else{
@@ -89,7 +89,7 @@ class WidgetProvider : AppWidgetProvider() {
                     Log.d("TAG_date", date.toString())
                 }
             }else{
-                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH)}"
                     Log.d("TAG_date", date.toString())
                 }else{
@@ -99,7 +99,7 @@ class WidgetProvider : AppWidgetProvider() {
             }
         }else{
             if(dateNow.get(Calendar.MONTH) < 10){
-                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
                     Log.d("TAG_date", date.toString())
                 }else{
@@ -107,7 +107,7 @@ class WidgetProvider : AppWidgetProvider() {
                     Log.d("TAG_date", date.toString())
                 }
             }else{
-                if(dateNow.get(dateNow.get(Calendar.DAY_OF_WEEK)) < 10){
+                if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
                     Log.d("TAG_date", date.toString())
                 }else{
@@ -150,7 +150,7 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             }
         }
-        remoteViews.setTextViewText(R.id.knownDate, "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_WEEK) - 1}일 오전 11시 기준으로 수집된 데이터입니다.")
+        remoteViews.setTextViewText(R.id.knownDate, "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_MONTH) - 1}일 오전 11시 기준으로 수집된 데이터입니다.")
 
         tickClock(remoteViews, appWidgetManager, appWidgetId, arrayData, 1)
 
