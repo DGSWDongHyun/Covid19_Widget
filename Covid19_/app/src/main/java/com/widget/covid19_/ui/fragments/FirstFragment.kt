@@ -28,9 +28,6 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.collections.ArrayList
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class FirstFragment : Fragment() {
 
     override fun onCreateView(
