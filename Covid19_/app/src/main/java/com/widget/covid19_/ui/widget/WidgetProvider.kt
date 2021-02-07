@@ -80,6 +80,7 @@ class WidgetProvider : AppWidgetProvider() {
         var date = ""
 
         if(onCheckTime(dateNow)){
+            remoteViews.setTextViewText(R.id.knownDate, "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_MONTH)}일 오전 11시 기준으로 수집된 데이터입니다.")
             if(dateNow.get(Calendar.MONTH) < 10){
                 if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH)}"
@@ -98,6 +99,7 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             }
         }else{
+            remoteViews.setTextViewText(R.id.knownDate, "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_MONTH) - 1}일 오전 11시 기준으로 수집된 데이터입니다.")
             if(dateNow.get(Calendar.MONTH) < 10){
                 if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(Calendar.DAY_OF_MONTH) - 1}"
@@ -150,7 +152,6 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             }
         }
-        remoteViews.setTextViewText(R.id.knownDate, "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_MONTH) - 1}일 오전 11시 기준으로 수집된 데이터입니다.")
 
         tickClock(remoteViews, appWidgetManager, appWidgetId, arrayData, 1)
 

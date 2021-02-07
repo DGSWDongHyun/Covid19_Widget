@@ -1,18 +1,17 @@
 package com.widget.covid19_.ui.fragments
 
-import android.appwidget.AppWidgetManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.StrictMode
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RemoteViews
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.TextView
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import com.widget.covid19_.R
 import com.widget.covid19_.data.key.KeyData
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,6 @@ import kotlinx.coroutines.withContext
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
-import org.w3c.dom.Text
 import org.xml.sax.InputSource
 import java.net.URL
 import java.util.*
@@ -50,6 +48,7 @@ class FirstFragment : Fragment() {
         val incText = view.findViewById<TextView>(R.id.incTextView)
         val incPlaceText = view.findViewById<TextView>(R.id.incPlaceTextView)
 
+        loadWebView(view)
         getCovidInfo(incText, incPlaceText, dateText)
 
     }
@@ -62,6 +61,7 @@ class FirstFragment : Fragment() {
         var date = ""
 
         if(onCheckTime(dateNow)){
+            dateText.text = "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_MONTH)}일 오전 11시 기준으로 수집된 데이터입니다."
             if(dateNow.get(Calendar.MONTH) < 10){
                 if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(
@@ -84,6 +84,7 @@ class FirstFragment : Fragment() {
                 }
             }
         }else{
+            dateText.text = "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_MONTH) - 1}일 오전 11시 기준으로 수집된 데이터입니다."
             if(dateNow.get(Calendar.MONTH) < 10){
                 if(dateNow.get(dateNow.get(Calendar.DAY_OF_MONTH)) < 10){
                     date = "${dateNow.get(Calendar.YEAR)}0${dateNow.get(Calendar.MONTH) + 1}0${dateNow.get(
@@ -136,11 +137,29 @@ class FirstFragment : Fragment() {
                 }
             }
         }
-        dateText.text = "${dateNow.get(Calendar.MONTH) + 1}월 ${dateNow.get(Calendar.DAY_OF_MONTH) - 1}일 오전 11시 기준으로 수집된 데이터입니다."
-
         tickClock(incText, incPlaceText , dateText, arrayData, 1)
 
 
+    }
+
+    private fun loadWebView(view : View){
+        val mWebView = view.findViewById(R.id.loadView) as WebView
+        mWebView.webViewClient = WebViewClient() // 클릭시 새창 안뜨게
+
+        val mWebSettings = mWebView.settings //세부 세팅 등록
+        mWebSettings.javaScriptEnabled = true // 웹페이지 자바스클비트 허용 여부
+        mWebSettings.setSupportMultipleWindows(false) // 새창 띄우기 허용 여부
+        mWebSettings.javaScriptCanOpenWindowsAutomatically = false // 자바스크립트 새창 띄우기(멀티뷰) 허용 여부
+        mWebSettings.loadWithOverviewMode = true // 메타태그 허용 여부
+        mWebSettings.useWideViewPort = true // 화면 사이즈 맞추기 허용 여부
+        mWebSettings.setSupportZoom(false) // 화면 줌 허용 여부
+        mWebSettings.builtInZoomControls = false // 화면 확대 축소 허용 여부
+        mWebSettings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN // 컨텐츠 사이즈 맞추기
+        mWebSettings.cacheMode = WebSettings.LOAD_NO_CACHE // 브라우저 캐시 허용 여부
+        mWebSettings.domStorageEnabled = true // 로컬저장소 허용 여부
+
+
+        mWebView.loadUrl("https://search.naver.com/search.naver?where=news&sm=tab_jum&query=%EC%BD%94%EB%A1%9C%EB%82%98")
     }
 
     private fun tickClock(incText : TextView, incPlaceText : TextView, dateText : TextView, arrayData : ArrayList<KeyData>, index : Int?) {

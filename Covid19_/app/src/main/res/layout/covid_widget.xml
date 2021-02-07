@@ -77,7 +77,7 @@
                         android:id="@+id/getIncText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView"
+                        android:text="0"
                         android:textColor="@color/black"
                         android:textSize="10sp"
                         android:textStyle="bold" />
