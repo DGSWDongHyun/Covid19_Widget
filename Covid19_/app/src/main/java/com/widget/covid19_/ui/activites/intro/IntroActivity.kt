@@ -24,7 +24,6 @@ class IntroActivity : AppCompatActivity() {
             if(checkFirstRun())
                 IntroductionBuilder(this).withSlides(generateSlides()!!).introduceMyself();
             finish()
-            IntroductionBuilder(this).withSlides(generateSlides()!!).introduceMyself();
         }, 2500)
     }
     fun checkFirstRun() : Boolean {
