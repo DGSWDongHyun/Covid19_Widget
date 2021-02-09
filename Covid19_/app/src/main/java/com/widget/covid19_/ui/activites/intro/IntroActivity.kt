@@ -23,7 +23,9 @@ class IntroActivity : AppCompatActivity() {
         Handler().postDelayed(Runnable {
             if(checkFirstRun())
                 IntroductionBuilder(this).withSlides(generateSlides()!!).introduceMyself();
+            IntroductionBuilder(this).withSlides(generateSlides()!!).introduceMyself();
             finish()
+
         }, 2500)
     }
     fun checkFirstRun() : Boolean {
@@ -43,13 +45,15 @@ class IntroActivity : AppCompatActivity() {
                 .withDescription("코로나 상황을 매번 앱으로 혹은 웹으로 접속하는 건 번거롭죠.\n 그렇다면 휴대폰을 키면 바로 확인 가능한건 어떠신가요?")
                 .withColorResource(R.color.gray)
                 .withDescriptionSize(14F)
+                .withImage(R.drawable.covid)
         )
         result.add(Slide()
                 .withTitleSize(18F)
                 .withDescriptionSize(14F)
                 .withTitle("이제 편하게 이용하세요!")
-                .withDescription("홈 화면에서 간단하게 위젯을 추가해서, 확인해봐요!")
+                .withDescription("이제 홈 화면에서 간단하게 위젯을 추가해서, 확인해보세요!")
                 .withColorResource(R.color.gray)
+                .withImage(R.drawable.mask)
         )
         return result
     }

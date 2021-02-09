@@ -1,15 +1,17 @@
 package com.widget.covid19_.ui.widget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.CountDownTimer
 import android.os.StrictMode
 import android.util.Log
 import android.widget.RemoteViews
-import com.widget.covid19_.data.key.KeyData
 import com.widget.covid19_.R
+import com.widget.covid19_.data.key.KeyData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,7 +28,8 @@ import kotlin.collections.ArrayList
 
 
 class WidgetProvider : AppWidgetProvider() {
-    private val MY_ACTION = "android.action.MY_ACTION"
+    private val BTN = "BTN_CLICKED"
+    var refreshTimer : CountDownTimer ?= null
 
     //    위젯 갱신 주기에 따라 위젯을 갱신할때 호출
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
@@ -41,8 +44,8 @@ class WidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         var action = intent?.action
-        if (action == MY_ACTION) {
-            // TODO
+        if (action == BTN) {
+
         }
     }
 
@@ -152,14 +155,15 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             }
         }
-
+        
         tickClock(remoteViews, appWidgetManager, appWidgetId, arrayData, 1)
 
 
     }
 
+
     private fun tickClock(remoteViews: RemoteViews, appWidgetManager: AppWidgetManager?, appWidgetId : Int?, arrayData : ArrayList<KeyData>, index : Int?) {
-        object : CountDownTimer(5000, 1000) {
+        refreshTimer = object : CountDownTimer(5000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
             }
             override fun onFinish() {
