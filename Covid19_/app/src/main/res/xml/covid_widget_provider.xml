@@ -2,7 +2,7 @@
 <appwidget-provider
     android:initialLayout="@layout/covid_widget"
     android:minWidth="180dp"
-    android:minHeight="60dp"
+    android:minHeight="120dp"
     android:updatePeriodMillis="86400000"
     android:resizeMode="horizontal|vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" />

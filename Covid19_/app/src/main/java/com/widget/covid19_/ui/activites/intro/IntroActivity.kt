@@ -22,8 +22,7 @@ class IntroActivity : AppCompatActivity() {
 
         Handler().postDelayed(Runnable {
             if(checkFirstRun())
-                IntroductionBuilder(this).withSlides(generateSlides()!!).introduceMyself();
-            IntroductionBuilder(this).withSlides(generateSlides()!!).introduceMyself();
+                IntroductionBuilder(this).withSlides(generateSlides()!!).introduceMyself()
             finish()
 
         }, 2500)
